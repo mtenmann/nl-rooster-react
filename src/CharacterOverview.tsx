@@ -111,18 +111,11 @@ export default function CharacterOverview() {
             <th className="border p-2 cursor-pointer" onClick={() => handleSort("activeSpec")}>
               Spec
             </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("activeSpec")}>
-              Spec
-            </th>
-            </th>
-            <th className="border p-2">Role</th>
             <th className="border p-2 cursor-pointer" onClick={() => handleSort("role")}>
               Role
             </th>
-            </th>
             <th className="border p-2 cursor-pointer" onClick={() => handleSort("mythicRating")}>
               Mythic+ Rating
-            </th>
             </th>
             <th className="border p-2 cursor-pointer" onClick={() => handleSort("bestPerfAvgScore")}>
               Avg Score Raid
