@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { Character } from "./types/Character";
 
-function TeamOverview({ team }) {
-  const [characters, setCharacters] = useState([]);
-  const [error, setError] = useState(null);
-  const [sortField, setSortField] = useState("equippedItemLevel");
-  const [sortOrder, setSortOrder] = useState("desc");
+export default function TeamOverview() {
+  const { team } = useParams<{ team: string }>();
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [sortField, setSortField] = useState<keyof Character>("equippedItemLevel");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/characters/overview/${team}`)
-      .then((response) => {
-        // Sort descending by default
-        const sortedData = response.data.sort(
-          (a, b) => b.equippedItemLevel - a.equippedItemLevel
+      .get(`http://localhost:8080/api/characters/overview?team=${team}`)
+      .then(({ data }) => {
+        const sorted = data.sort((a: Character, b: Character) =>
+          b.equippedItemLevel - a.equippedItemLevel
         );
-        setCharacters(sortedData);
+        setCharacters(sorted);
         setError(null);
       })
       .catch((err) => {
@@ -24,111 +26,55 @@ function TeamOverview({ team }) {
       });
   }, [team]);
 
-  const handleSort = (field) => {
-    let newSortOrder = "desc";
-    if (sortField === field) {
-      newSortOrder = sortOrder === "desc" ? "asc" : "desc";
-    }
+  const handleSort = (field: keyof Character) => {
+    const newSortOrder = sortField === field && sortOrder === "desc" ? "asc" : "desc";
     setSortField(field);
     setSortOrder(newSortOrder);
 
-    const sortedCharacters = [...characters].sort((a, b) => {
-      const aVal = a[field];
-      const bVal = b[field];
-      if (typeof aVal === "number") {
-        return newSortOrder === "desc" ? bVal - aVal : aVal - bVal;
-      } else {
+    setCharacters((prev) =>
+      [...prev].sort((a: Character, b: Character) => {
+        const aVal = a[field];
+        const bVal = b[field];
+
+        if (typeof aVal === "number" && typeof bVal === "number") {
+          return newSortOrder === "desc" ? bVal - aVal : aVal - bVal;
+        }
+
         return newSortOrder === "desc"
-          ? bVal.localeCompare(aVal)
-          : aVal.localeCompare(bVal);
-      }
-    });
-    setCharacters(sortedCharacters);
+          ? (bVal as string).localeCompare(aVal as string)
+          : (aVal as string).localeCompare(bVal as string);
+      })
+    );
   };
 
   return (
-    <div style={{ marginTop: "1rem" }}>
-      <h2>{team.toUpperCase()} Overview</h2>
+    <div>
+      <h2>Team Overview for {team}</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <table border="1" cellPadding="8" cellSpacing="0">
+      <table>
         <thead>
           <tr>
+            <th onClick={() => handleSort("name")}>Name</th>
+            <th onClick={() => handleSort("realm")}>Realm</th>
+            <th onClick={() => handleSort("equippedItemLevel")}>Item Level</th>
             <th>Class</th>
-            <th className="cursor-pointer" onClick={() => handleSort("name")}>
-              Name
-            </th>
-            <th className="cursor-pointer" onClick={() => handleSort("realm")}>
-              Realm
-            </th>
-            <th
-              className="cursor-pointer"
-              onClick={() => handleSort("equippedItemLevel")}
-            >
-              Item Level
-            </th>
-            <th className="cursor-pointer" onClick={() => handleSort("activeSpec")}>
-              Spec
-            </th>
-            <th className="cursor-pointer" onClick={() => handleSort("role")}>
-              Role
-            </th>
-            <th
-              className="cursor-pointer"
-              onClick={() => handleSort("mythicRating")}
-            >
-              Mythic+ Rating
-            </th>
-            <th
-              className="cursor-pointer"
-              onClick={() => handleSort("bestPerfAvgScore")}
-            >
-              Best Perf. Avg Score
-            </th>
+            <th>Spec</th>
+            <th>Role</th>
+            <th onClick={() => handleSort("mythicRating")}>Mythic+ Rating</th>
+            <th onClick={() => handleSort("bestPerfAvgScore")}>Raid Avg</th>
           </tr>
         </thead>
         <tbody>
-          {characters.map((char, idx) => (
-            <tr key={idx}>
-              <td>
-                <img
-                  src={char.classIcon}
-                  alt={char.className}
-                  width="32"
-                  height="32"
-                />
-              </td>
-              <td>
-                <a
-                  href={char.blizzardUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {char.name}
-                </a>
-              </td>
-              <td>{char.realm}</td>
-              <td>{char.equippedItemLevel}</td>
-              <td>{char.activeSpec}</td>
-              <td>{char.role}</td>
-              <td style={{ color: char.mythicRatingColor }}>
-                <a
-                  href={char.raiderIoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: char.mythicRatingColor, textDecoration: "none" }}
-                >
-                  {Math.round(char.mythicRating)}
-                </a>
-              </td>
-              <td>
-                <a
-                  href={char.warcraftLogsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {Math.round(char.bestPerfAvgScore)}
-                </a>
-              </td>
+          {characters.map((c) => (
+            <tr key={c.id}>
+              <td>{c.name}</td>
+              <td>{c.realm}</td>
+              <td>{c.equippedItemLevel}</td>
+              <td>{c.className}</td>
+              <td>{c.activeSpec}</td>
+              <td>{c.role}</td>
+              <td style={{ color: c.mythicRatingColor }}>{Math.floor(c.mythicRating)}</td>
+              <td>{Math.round(c.bestPerfAvgScore)}</td>
             </tr>
           ))}
         </tbody>
@@ -136,5 +82,3 @@ function TeamOverview({ team }) {
     </div>
   );
 }
-
-export default TeamOverview;

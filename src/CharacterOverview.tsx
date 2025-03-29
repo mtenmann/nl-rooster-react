@@ -10,10 +10,15 @@ type Character = {
   classIcon: string;
   equippedItemLevel: number;
   activeSpec: string;
+  role: string;
   mythicRating: number;
   mythicRatingColor: string;
   bestPerfAvgScore: number;
+  raiderIoUrl: string;
+  warcraftLogsUrl: string;
+  blizzardUrl: string;
 };
+
 
 // Determine the role based on className and activeSpec
 const determineRole = (className: string, activeSpec: string): string => {

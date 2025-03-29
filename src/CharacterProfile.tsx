@@ -1,59 +1,45 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { Character } from "./types/Character";
 
-const CharacterProfile = () => {
-    const [realm, setRealm] = useState("");
-    const [character, setCharacter] = useState("");
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
+export default function CharacterProfile() {
+  const { name, realm } = useParams<{ name: string; realm: string }>();
+  const [character, setCharacter] = useState<Character | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const fetchCharacter = async () => {
-        try {
-            // Convert to lowercase to match API expectations if necessary
-            const realmLower = realm.trim().toLowerCase();
-            const characterLower = character.trim().toLowerCase();
-            const response = await axios.get(
-                `http://localhost:8080/api/character/${realmLower}/${characterLower}`
-            );
-            setData(response.data);
-            setError(null);
-        } catch (err) {
-            console.error("Error fetching character:", err);
-            setError("Error fetching character data. Please check the realm/character name.");
-            setData(null);
-        }
-    };
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/characters/profile?name=${name}&realm=${realm}`)
+      .then(({ data }) => {
+        setCharacter(data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Error fetching character data. Please check the realm/character name.");
+      });
+  }, [name, realm]);
 
-    return (
-        <div>
-            <h1>...</h1>
-            <input
-                type="text"
-                placeholder="Realm"
-                value={realm}
-                onChange={(e) => setRealm(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Character Name"
-                value={character}
-                onChange={(e) => setCharacter(e.target.value)}
-            />
-            <button onClick={fetchCharacter}>Get Character</button>
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!character) return <p>Loading...</p>;
 
-            {error && <p style={{color: "red"}}>{error}</p>}
-
-            {data && (
-                <div>
-                    <h2>{data.name}</h2>
-                    <p>Level: {data.level}</p>
-                    <p>Faction: {data.faction && data.faction.name}</p>
-                    <p>Class: {data.character_class && data.character_class.name}</p>
-                    {/* Render additional details as needed */}
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default CharacterProfile;
+  return (
+    <div>
+      <h2>{character.name} - Level {character.level}</h2>
+      <p>Faction: {character.faction}</p>
+      <p>Class: {character.character_class}</p>
+      <p>Mythic Rating: <span style={{ color: character.mythicRatingColor }}>{character.mythicRating}</span></p>
+      <p>Raid Avg Score: {Math.round(character.bestPerfAvgScore)}</p>
+      <p>
+        <a href={character.raiderIoUrl} target="_blank" rel="noreferrer">Raider.IO</a>
+      </p>
+      <p>
+        <a href={character.warcraftLogsUrl} target="_blank" rel="noreferrer">Warcraft Logs</a>
+      </p>
+      <p>
+        <a href={character.blizzardUrl} target="_blank" rel="noreferrer">Blizzard Profile</a>
+      </p>
+    </div>
+  );
+}
