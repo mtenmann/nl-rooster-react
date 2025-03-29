@@ -19,6 +19,9 @@ type Character = {
   blizzardUrl: string;
 };
 
+type Props = {
+  team: string;
+};
 
 // Determine the role based on className and activeSpec
 const determineRole = (className: string, activeSpec: string): string => {

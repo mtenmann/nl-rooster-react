@@ -3,6 +3,10 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Character } from "./types/Character";
 
+type Props = {
+  team: string;
+};
+
 export default function TeamOverview() {
   const { team } = useParams<{ team: string }>();
   const [characters, setCharacters] = useState<Character[]>([]);
