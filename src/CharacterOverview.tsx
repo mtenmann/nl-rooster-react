@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Character } from "../types/Character";
+import { Character } from "./types/Character";
 
 type Props = { team: string };
 
