@@ -7,8 +7,7 @@ type Props = {
   team: string;
 };
 
-export default function TeamOverview() {
-  const { team } = useParams<{ team: string }>();
+export default function TeamOverview({ team }: Props) {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [sortField, setSortField] = useState<keyof Character>("equippedItemLevel");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");

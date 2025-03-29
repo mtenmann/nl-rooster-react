@@ -44,8 +44,7 @@ const determineRole = (className: string, activeSpec: string): string => {
   }
 };
 
-export default function CharacterOverview() {
-  const { team } = useParams();
+export default function CharacterOverview({ team }: Props) {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [sortField, setSortField] = useState<keyof Character>("equippedItemLevel");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
