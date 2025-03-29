@@ -1,4 +1,3 @@
-// TeamOverview.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -55,13 +54,36 @@ function TeamOverview({ team }) {
         <thead>
           <tr>
             <th>Class</th>
-            <th className="cursor-pointer" onClick={() => handleSort("name")}>Name</th>
-            <th className="cursor-pointer" onClick={() => handleSort("realm")}>Realm</th>
-            <th className="cursor-pointer" onClick={() => handleSort("equippedItemLevel")}>Item Level</th>
-            <th className="cursor-pointer" onClick={() => handleSort("activeSpec")}>Spec</th>
-            <th className="cursor-pointer" onClick={() => handleSort("role")}>Role</th>
-            <th className="cursor-pointer" onClick={() => handleSort("mythicRating")}>Mythic+ Rating</th>
-            <th className="cursor-pointer" onClick={() => handleSort("bestPerfAvgScore")}>Best Perf. Avg Score</th>
+            <th className="cursor-pointer" onClick={() => handleSort("name")}>
+              Name
+            </th>
+            <th className="cursor-pointer" onClick={() => handleSort("realm")}>
+              Realm
+            </th>
+            <th
+              className="cursor-pointer"
+              onClick={() => handleSort("equippedItemLevel")}
+            >
+              Item Level
+            </th>
+            <th className="cursor-pointer" onClick={() => handleSort("activeSpec")}>
+              Spec
+            </th>
+            <th className="cursor-pointer" onClick={() => handleSort("role")}>
+              Role
+            </th>
+            <th
+              className="cursor-pointer"
+              onClick={() => handleSort("mythicRating")}
+            >
+              Mythic+ Rating
+            </th>
+            <th
+              className="cursor-pointer"
+              onClick={() => handleSort("bestPerfAvgScore")}
+            >
+              Best Perf. Avg Score
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -75,15 +97,38 @@ function TeamOverview({ team }) {
                   height="32"
                 />
               </td>
-              <td>{char.name}</td>
+              <td>
+                <a
+                  href={char.blizzardUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {char.name}
+                </a>
+              </td>
               <td>{char.realm}</td>
               <td>{char.equippedItemLevel}</td>
               <td>{char.activeSpec}</td>
               <td>{char.role}</td>
               <td style={{ color: char.mythicRatingColor }}>
-                {Math.round(char.mythicRating)}
+                <a
+                  href={char.raiderIoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: char.mythicRatingColor, textDecoration: "none" }}
+                >
+                  {Math.round(char.mythicRating)}
+                </a>
               </td>
-              <td>{Math.round(char.bestPerfAvgScore)}</td>
+              <td>
+                <a
+                  href={char.warcraftLogsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {Math.round(char.bestPerfAvgScore)}
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
