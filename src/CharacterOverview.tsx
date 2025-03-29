@@ -1,10 +1,22 @@
-// CharacterOverview.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
+type Character = {
+  id: string;
+  name: string;
+  realm: string;
+  className: string;
+  classIcon: string;
+  equippedItemLevel: number;
+  activeSpec: string;
+  mythicRating: number;
+  mythicRatingColor: string;
+  bestPerfAvgScore: number;
+};
+
 // Determine the role based on className and activeSpec
-const determineRole = (className, activeSpec) => {
+const determineRole = (className: string, activeSpec: string): string => {
   const c = className.toLowerCase();
   const spec = activeSpec.toLowerCase();
   switch (c) {
@@ -15,19 +27,16 @@ const determineRole = (className, activeSpec) => {
       if (spec === "protection") return "Tank";
       return "DPS";
     case "hunter":
-      return "DPS";
     case "rogue":
+    case "mage":
+    case "warlock":
       return "DPS";
     case "priest":
-      return (spec === "discipline" || spec === "holy") ? "Healer" : "DPS";
+      return spec === "discipline" || spec === "holy" ? "Healer" : "DPS";
     case "death knight":
       return spec === "blood" ? "Tank" : "DPS";
     case "shaman":
       return spec === "restoration" ? "Healer" : "DPS";
-    case "mage":
-      return "DPS";
-    case "warlock":
-      return "DPS";
     case "monk":
       if (spec === "brewmaster") return "Tank";
       if (spec === "mistweaver") return "Healer";
@@ -41,23 +50,23 @@ const determineRole = (className, activeSpec) => {
     case "evoker":
       return spec === "preservation" ? "Healer" : "DPS";
     default:
-      return "DPS"; // Fallback role
+      return "DPS";
   }
 };
 
 export default function CharacterOverview() {
-  const { team } = useParams(); // e.g., "tempo"
-  const [characters, setCharacters] = useState([]);
-  const [sortField, setSortField] = useState("equippedItemLevel");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [error, setError] = useState(null);
+  const { team } = useParams();
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [sortField, setSortField] = useState<keyof Character>("equippedItemLevel");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     axios
       .get(`http://localhost:8080/api/characters/overview?team=${team}`)
       .then(({ data }) => {
         const sortedData = data.sort(
-          (a, b) => b.equippedItemLevel - a.equippedItemLevel
+          (a: Character, b: Character) => b.equippedItemLevel - a.equippedItemLevel
         );
         setCharacters(sortedData);
         setError(null);
@@ -68,23 +77,23 @@ export default function CharacterOverview() {
       });
   }, [team]);
 
-  const handleSort = (field) => {
-    let newSortOrder = "desc";
+  const handleSort = (field: keyof Character) => {
+    let newSortOrder: "asc" | "desc" = "desc";
     if (sortField === field) {
       newSortOrder = sortOrder === "desc" ? "asc" : "desc";
     }
     setSortField(field);
     setSortOrder(newSortOrder);
     setCharacters((prev) =>
-      [...prev].sort((a, b) => {
+      [...prev].sort((a: Character, b: Character) => {
         const aVal = a[field];
         const bVal = b[field];
-        if (typeof aVal === "number") {
+        if (typeof aVal === "number" && typeof bVal === "number") {
           return newSortOrder === "desc" ? bVal - aVal : aVal - bVal;
         }
         return newSortOrder === "desc"
-          ? bVal.localeCompare(aVal)
-          : aVal.localeCompare(bVal);
+          ? (bVal as string).localeCompare(aVal as string)
+          : (aVal as string).localeCompare(bVal as string);
       })
     );
   };
@@ -124,7 +133,6 @@ export default function CharacterOverview() {
         </thead>
         <tbody>
           {characters.map((c) => {
-            // Calculate role dynamically using determineRole
             const role = determineRole(c.className, c.activeSpec);
             return (
               <tr key={c.id}>
@@ -139,7 +147,7 @@ export default function CharacterOverview() {
                 <td className="border p-2" style={{ color: c.mythicRatingColor }}>
                   {Math.floor(c.mythicRating)}
                 </td>
-                <td>{Math.round(char.bestPerfAvgScore)}</td>
+                <td className="border p-2">{Math.round(c.bestPerfAvgScore)}</td>
               </tr>
             );
           })}
