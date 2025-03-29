@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Character } from "../types/Character";
 
+type Props = { team: string };
+
 export default function CharacterProfile() {
   const { name, realm } = useParams<{ name: string; realm: string }>();
   const [character, setCharacter] = useState<Character | null>(null);

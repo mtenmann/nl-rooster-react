@@ -1,23 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Character } from "../types/Character";
 
-type Character = {
-  id: string;
-  name: string;
-  realm: string;
-  className: string;
-  classIcon: string;
-  equippedItemLevel: number;
-  activeSpec: string;
-  role: string;
-  mythicRating: number;
-  mythicRatingColor: string;
-  bestPerfAvgScore: number;
-  raiderIoUrl: string;
-  warcraftLogsUrl: string;
-  blizzardUrl: string;
-};
+type Props = { team: string };
 
 // Determine the role based on className and activeSpec
 const determineRole = (className: string, activeSpec: string): string => {
