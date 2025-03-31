@@ -10,7 +10,7 @@ export default function CharacterProfile() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/characters/profile?name=${name}&realm=${realm}`)
+      .get(`${process.env.REACT_APP_API_URL}/api/characters/profile?name=${name}&realm=${realm}`)
       .then(({ data }) => {
         setCharacter(data);
         setError(null);

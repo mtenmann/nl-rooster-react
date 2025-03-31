@@ -14,7 +14,7 @@ export default function TeamOverview({ team }: Props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/characters/overview?team=${team}`)
+      .get(`${process.env.REACT_APP_API_URL}/api/characters/overview?team=${team}`)
       .then(({ data }) => {
         const sorted = data.sort((a: Character, b: Character) =>
           b.equippedItemLevel - a.equippedItemLevel
