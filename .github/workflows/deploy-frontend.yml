@@ -27,6 +27,9 @@ jobs:
           npm install
           export NODE_ENV=production
           npm run build
+        env:
+            NODE_ENV: production
+            REACT_APP_API_URL: http://nl-rooster-service-discovery.nl-rooster-cluster-ns:8080
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
