@@ -7,10 +7,11 @@ export default function CharacterProfile() {
   const { name, realm } = useParams<{ name: string; realm: string }>();
   const [character, setCharacter] = useState<Character | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/characters/profile?name=${name}&realm=${realm}`)
+      .get(`${apiUrl}/api/characters/profile?name=${name}&realm=${realm}`)
       .then(({ data }) => {
         setCharacter(data);
         setError(null);

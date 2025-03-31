@@ -48,10 +48,11 @@ export default function CharacterOverview({ team }: Props) {
   const [sortField, setSortField] = useState<keyof Character>("equippedItemLevel");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [error, setError] = useState<string | null>(null);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/characters/overview?team=${team}`)
+      .get(`${apiUrl}/api/characters/overview?team=${team}`)
       .then(({ data }) => {
         const sortedData = data.sort(
           (a: Character, b: Character) => b.equippedItemLevel - a.equippedItemLevel
