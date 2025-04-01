@@ -18,6 +18,8 @@ function App() {
             <Route path="/foniks" element={<TeamOverview team="foniks" />} />
             <Route path="/boble" element={<TeamOverview team="boble" />} />
             <Route path="/panser" element={<TeamOverview team="panser" />} />
+            <Route path="/axemen" element={<TeamOverview team="axemen" />} />
+            <Route path="/kildevangen" element={<TeamOverview team="kildevangen" />} />
           </Routes>
         </main>
       </div>
