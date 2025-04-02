@@ -33,12 +33,9 @@ const menuItems = [
 ];
 
 const ResponsiveMenu = () => {
-  //const selected = window.location.pathname.split("/")[1];
   const selected = useResolvedPath(window.location.pathname).pathname;
   const isSelected = (item: string) =>
     selected.toLowerCase() === item.toLowerCase();
-
-  //const selectedItem = menuItems.find((item) => item.route === `/${selected}`);
 
   return (
     <nav className="bg-wow-dark p-4 w-full">
