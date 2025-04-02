@@ -11,11 +11,11 @@ function App() {
         <hr className="border-gray-700" />
         <main className="p-4">
           <Routes>
+            <Route path="/" element={<TeamOverview team="boble" />} />
             <Route path="/tempo" element={<TeamOverview team="tempo" />} />
             <Route path="/delta" element={<TeamOverview team="delta" />} />
             <Route path="/foniks" element={<TeamOverview team="foniks" />} />
             <Route path="/boble" element={<TeamOverview team="boble" />} />
-            <Route path="/panser" element={<TeamOverview team="panser" />} />
             <Route path="/axemen" element={<TeamOverview team="axemen" />} />
             <Route
               path="/kildevangen"
