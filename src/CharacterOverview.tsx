@@ -1,51 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Character } from "./types/Character";
+import { determineRole } from "./helpers/determineRole";
 
 type Props = { team: string };
 
-// Determine the role based on className and activeSpec
-const determineRole = (className: string, activeSpec: string): string => {
-  const c = className.toLowerCase();
-  const spec = activeSpec.toLowerCase();
-  switch (c) {
-    case "warrior":
-      return spec === "protection" ? "Tank" : "DPS";
-    case "paladin":
-      if (spec === "holy") return "Healer";
-      if (spec === "protection") return "Tank";
-      return "DPS";
-    case "hunter":
-    case "rogue":
-    case "mage":
-    case "warlock":
-      return "DPS";
-    case "priest":
-      return spec === "discipline" || spec === "holy" ? "Healer" : "DPS";
-    case "death knight":
-      return spec === "blood" ? "Tank" : "DPS";
-    case "shaman":
-      return spec === "restoration" ? "Healer" : "DPS";
-    case "monk":
-      if (spec === "brewmaster") return "Tank";
-      if (spec === "mistweaver") return "Healer";
-      return "DPS";
-    case "druid":
-      if (spec === "guardian") return "Tank";
-      if (spec === "restoration") return "Healer";
-      return "DPS";
-    case "demon hunter":
-      return spec === "vengeance" ? "Tank" : "DPS";
-    case "evoker":
-      return spec === "preservation" ? "Healer" : "DPS";
-    default:
-      return "DPS";
-  }
-};
-
 export default function CharacterOverview({ team }: Props) {
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [sortField, setSortField] = useState<keyof Character>("equippedItemLevel");
+  const [sortField, setSortField] =
+    useState<keyof Character>("equippedItemLevel");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [error, setError] = useState<string | null>(null);
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -55,7 +18,8 @@ export default function CharacterOverview({ team }: Props) {
       .get(`${apiUrl}/api/characters/overview?team=${team}`)
       .then(({ data }) => {
         const sortedData = data.sort(
-          (a: Character, b: Character) => b.equippedItemLevel - a.equippedItemLevel
+          (a: Character, b: Character) =>
+            b.equippedItemLevel - a.equippedItemLevel
         );
         setCharacters(sortedData);
         setError(null);
@@ -89,35 +53,21 @@ export default function CharacterOverview({ team }: Props) {
 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-4">
-        Character Overview for {team}
-      </h1>
+      <h1 className="text-3xl font-bold mb-4">Character Overview for {team}</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <table className="w-full border-collapse">
         <thead>
           <tr>
             <th className="border p-2">Class Icon</th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("name")}>
-              Name
-            </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("realm")}>
-              Realm
-            </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("equippedItemLevel")}>
-              Item Level
-            </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("activeSpec")}>
-              Spec
-            </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("role")}>
-              Role
-            </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("mythicRating")}>
-              Mythic+ Rating
-            </th>
-            <th className="border p-2 cursor-pointer" onClick={() => handleSort("bestPerfAvgScore")}>
-              Avg Score Raid
-            </th>
+            {tableContent.map((item) => (
+              <th
+                key={item.header}
+                className="border p-2 cursor-pointer"
+                onClick={() => handleSort(item.field)}
+              >
+                {item.header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -126,14 +76,22 @@ export default function CharacterOverview({ team }: Props) {
             return (
               <tr key={c.id}>
                 <td className="border p-2">
-                  <img src={c.classIcon} alt={c.className} width={32} height={32} />
+                  <img
+                    src={c.classIcon}
+                    alt={c.className}
+                    width={32}
+                    height={32}
+                  />
                 </td>
                 <td className="border p-2">{c.name}</td>
                 <td className="border p-2">{c.realm}</td>
                 <td className="border p-2">{c.equippedItemLevel}</td>
                 <td className="border p-2">{c.activeSpec}</td>
                 <td className="border p-2">{role}</td>
-                <td className="border p-2" style={{ color: c.mythicRatingColor }}>
+                <td
+                  className="border p-2"
+                  style={{ color: c.mythicRatingColor }}
+                >
                   {Math.floor(c.mythicRating)}
                 </td>
                 <td className="border p-2">{Math.round(c.bestPerfAvgScore)}</td>
@@ -145,3 +103,13 @@ export default function CharacterOverview({ team }: Props) {
     </div>
   );
 }
+
+const tableContent = [
+  { header: "Name", field: "name" },
+  { header: "Realm", field: "realm" },
+  { header: "Item Level", field: "equippedItemLevel" },
+  { header: "Spec", field: "activeSpec" },
+  { header: "Role", field: "role" },
+  { header: "Mythic+ Rating", field: "mythicRating" },
+  { header: "Avg Score Raid", field: "bestPerfAvgScore" },
+] as const;

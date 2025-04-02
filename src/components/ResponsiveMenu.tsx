@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const menuItems = [
   {
@@ -40,8 +40,8 @@ const menuItems = [
 
 const ResponsiveMenu = () => {
   return (
-    <nav className="bg-wow-dark p-4">
-      <ul className="flex justify-around items-center flex-wrap">
+    <nav className="bg-wow-dark p-4 w-full">
+      <ul className="flex items-center justify-around flex-wrap gap-4">
         {menuItems.map((item) => (
           <li key={item.name} className="m-2">
             <Link
@@ -54,7 +54,9 @@ const ResponsiveMenu = () => {
                 className="w-8 h-8 object-contain"
                 loading="lazy"
               />
-              <span className="text-sm md:text-base font-medium">{item.name}</span>
+              <span className="text-sm md:text-base font-medium">
+                {item.name}
+              </span>
             </Link>
           </li>
         ))}

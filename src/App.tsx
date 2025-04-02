@@ -1,15 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ResponsiveMenu from "./ResponsiveMenu";
 import TeamOverview from "./TeamOverview";
+import { Header } from "./components/Header";
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-wow-bg text-white font-wow">
-        <header className="py-6 text-center">
-          <h1 className="text-4xl font-bold">Nerdelandslaget</h1>
-          <ResponsiveMenu />
-        </header>
+        <Header />
+
         <hr className="border-gray-700" />
         <main className="p-4">
           <Routes>
@@ -19,7 +17,10 @@ function App() {
             <Route path="/boble" element={<TeamOverview team="boble" />} />
             <Route path="/panser" element={<TeamOverview team="panser" />} />
             <Route path="/axemen" element={<TeamOverview team="axemen" />} />
-            <Route path="/kildevangen" element={<TeamOverview team="kildevangen" />} />
+            <Route
+              path="/kildevangen"
+              element={<TeamOverview team="kildevangen" />}
+            />
           </Routes>
         </main>
       </div>
