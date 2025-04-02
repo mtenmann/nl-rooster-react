@@ -70,14 +70,26 @@ export default function TeamOverview({ team }: Props) {
         <tbody>
           {characters.map((c) => (
             <tr key={c.id}>
-              <td>{c.name}</td>
+              <td>
+                <a href={c.blizzardUrl} target="_blank" rel="noreferrer">
+                  {c.name}
+                </a>
+              </td>
               <td>{c.realm}</td>
               <td>{c.equippedItemLevel}</td>
               <td>{c.className}</td>
               <td>{c.activeSpec}</td>
               <td>{c.role}</td>
-              <td style={{ color: c.mythicRatingColor }}>{Math.floor(c.mythicRating)}</td>
-              <td>{Math.round(c.bestPerfAvgScore)}</td>
+              <td style={{ color: c.mythicRatingColor }}>
+                <a href={c.raiderIoUrl} target="_blank" rel="noreferrer">
+                  {Math.floor(c.mythicRating)}
+                </a>
+              </td>
+              <td>
+                <a href={c.warcraftLogsUrl} target="_blank" rel="noreferrer">
+                  {Math.round(c.bestPerfAvgScore)}
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
