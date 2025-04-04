@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import clsx from "clsx";
+import { Link, useResolvedPath } from "react-router-dom";
 
 const menuItems = [
   {
@@ -29,21 +30,21 @@ const menuItems = [
     fallback: "/menuimages/boble.webp",
     alt: "Champagne bottle",
   },
-  {
-    name: "Panser",
-    route: "/panser",
-    image: "/menuimages/panser.png",
-    fallback: "/menuimages/panser.webp",
-    alt: "Tank or armored car",
-  },
 ];
 
 const ResponsiveMenu = () => {
+  const selected = useResolvedPath(window.location.pathname).pathname;
+  const isSelected = (item: string) =>
+    selected.toLowerCase() === item.toLowerCase();
+
   return (
-    <nav className="bg-wow-dark p-4">
-      <ul className="flex justify-around items-center flex-wrap">
+    <nav className="p-4 w-full">
+      <ul className="flex items-center justify-center flex-wrap gap-2">
         {menuItems.map((item) => (
-          <li key={item.name} className="m-2">
+          <li
+            key={item.name}
+            className={clsx("m-2", isSelected(item.route) && "bg-gray-700")}
+          >
             <Link
               to={item.route}
               className="flex flex-row items-center space-x-2 border border-gray-700 rounded p-2 hover:bg-wow-dark hover:text-wow-gold"
@@ -54,7 +55,9 @@ const ResponsiveMenu = () => {
                 className="w-8 h-8 object-contain"
                 loading="lazy"
               />
-              <span className="text-sm md:text-base font-medium">{item.name}</span>
+              <span className="text-sm md:text-base font-medium">
+                {item.name}
+              </span>
             </Link>
           </li>
         ))}

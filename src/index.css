@@ -1,7 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+@theme {
+  --font-wow: "MedievalSharp", "sans-serif";
+
+  --color-wow-bg: #2a2a2a;
+  --color-wow-dark: #121212;
+  --color-wow-gold: #d4af37;
+  --color-wow-brown: #5c3a21;
+}
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -29,8 +35,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  width: 100%;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -40,9 +45,9 @@ h1 {
   line-height: 1.1;
 }
 .menu-icon {
-  width: 40px; /* Adjust size */
+  width: 40px;
   height: 40px;
-  object-fit: contain; /* Keeps aspect ratio */
+  object-fit: contain;
 }
 
 button {
